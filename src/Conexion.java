@@ -230,6 +230,7 @@ public class Conexion {
                 datos.add(rs.getString(1));
             }
             if (datos.size() > 0) {
+                datos.add(0,"Todos");
                 DefaultComboBoxModel cbm = new DefaultComboBoxModel(datos.toArray());
                 box.setModel(cbm);
             }
