@@ -1,16 +1,17 @@
+
 import java.sql.*;
 
 public class Orden {
-    
+
     static String todos = "SELECT * FROM ordenes ORDER BY folio";
     static String ids = "SELECT folio FROM ordenes ORDER BY folio";
-    
+
     int folio, silla, mesas_numero, alimentos_idalimentos;
     Timestamp fecha_hora;
     String observaciones, estadoo, clientes_codigoc, empleados_codigo_mesero, empleados_codigo_cocinero;
-    
+
     public Orden() {
-        
+
     }
 
     public Orden(int folio, Timestamp fecha_hora, String observaciones, String estadoo, int silla, String clientes_codigoc, int mesas_numero, int alimentos_idalimentos, String empleados_codigo_mesero, String empleados_codigo_cocinero) {
@@ -25,8 +26,8 @@ public class Orden {
         this.empleados_codigo_mesero = empleados_codigo_mesero;
         this.empleados_codigo_cocinero = empleados_codigo_cocinero;
     }
-    
-    public int insertar(Connection con){
+
+    public int insertar(Connection con) {
         int resultado = 0;
         try {
             String sql = "INSERT INTO ordenes VALUES(?,?,?,?,?,?,?,?,?,?)";
@@ -42,14 +43,14 @@ public class Orden {
             ps.setString(9, empleados_codigo_mesero);
             ps.setString(10, empleados_codigo_cocinero);
             return ps.executeUpdate();
-            
+
         } catch (Exception e) {
-            System.out.println("ERROR: "+e.getMessage());
+            System.out.println("ERROR: " + e.getMessage());
             return resultado;
         }
     }
-    
-    public int borrar(Connection con){
+
+    public int borrar(Connection con) {
         int resultado = 0;
         try {
             String sql = "DELETE FROM ordenes WHERE folio = ?";
@@ -57,12 +58,12 @@ public class Orden {
             ps.setInt(1, folio);
             return ps.executeUpdate();
         } catch (Exception e) {
-            System.out.println("ERROR: "+e.getMessage());
+            System.out.println("ERROR: " + e.getMessage());
             return resultado;
         }
     }
-    
-    public int actualizar(Connection con){
+
+    public int actualizar(Connection con) {
         int resultado = 0;
         try {
             String sql = "UPDATE ordenes SET fecha_hora = ?, observaciones = ?, estadoo = ?, silla = ?, clientes_codigoc = ?, mesas_numero = ?, alimentos_idalimentos = ?, empleados_codigo_mesero = ?, empleados_codigo_cocinero = ? WHERE folio = ?";
@@ -78,11 +79,23 @@ public class Orden {
             ps.setString(9, empleados_codigo_cocinero);
             ps.setInt(10, folio);
             return ps.executeUpdate();
-            
+
         } catch (Exception e) {
-            System.out.println("ERROR: "+e.getMessage());
+            System.out.println("ERROR: " + e.getMessage());
             return resultado;
         }
     }
-    
+
+    public int actualizarEstado(java.sql.Connection con, int folio, String estado) {
+        String sql = "UPDATE ordenes SET estadoo = ? WHERE folio = ?";
+        try (java.sql.PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, estado);
+            ps.setInt(2, folio);
+            return ps.executeUpdate() > 0 ? 1 : 0;   // 1 = se actualizó, 0 = no
+        } catch (java.sql.SQLException ex) {
+            System.out.println(ex.getMessage());
+            return 0;
+        }
+    }
+
 }
